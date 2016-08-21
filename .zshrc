@@ -75,3 +75,4 @@ HISTSIZE=1000
 SAVEHIST=1000
 export HISTFILE SAVEHIST
 
+source .aliases
