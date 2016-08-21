@@ -2,10 +2,10 @@
 mkdir -p $HOME/Programs
 mkdir -p $HOME/Development
 mkdir -p $HOME/Desktop/deb
-mkdir -p $HOME/pdf
-mkdir -p $HOME/pem
-mkdir -p $HOME/scripts
-mkdir -p $HOME/sd-img
+mkdir -p $HOME/Desktop/pdf
+mkdir -p $HOME/Desktop/pem
+mkdir -p $HOME/Desktop/scripts
+mkdir -p $HOME/Desktop/sd-img
 
 #Chrome
 CHROME="google-chrome-stable"
