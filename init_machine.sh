@@ -22,6 +22,9 @@ wget -P $HOME/Desktop/deb https://www.gitkraken.com/download/linux-deb
 #LATEX
 LATEX="texlive-full"
 
+#MAID
+MAID="maid"
+
 #OKULAR
 OKULAR="okular"
 
@@ -61,6 +64,9 @@ ROS="ros-$ROS_VERSION-desktop-full \
 sudo sh -c 'echo "deb http://packages.ros.org/ros/ubuntu $(lsb_release -sc) main" > /etc/apt/sources.list.d/ros-latest.list'
 sudo apt-key adv --keyserver hkp://ha.pool.sks-keyservers.net:80 --recv-key 0xB01FA116
 
+#RUBY - needed for maid
+RUBY="ruby"
+
 #SKYPE
 SKYPE="skype"
 
@@ -92,6 +98,7 @@ PACKAGES="$CHROME \
   $OKULAR \
   $PICOCOM \
   $ROS \
+  $RUBY \
   $SKYPE \
   $SPOTIFY \
   $SUBLIME \
@@ -114,3 +121,11 @@ sudo dpkg -i $HOME/Desktop/deb/gitkraken-amd64.deb
 #Install Qtcreator
 chmod +x $HOME/Programs/qt-opensource.*
 $HOME/Programs/./qt-opensource.*.run
+
+#Install maid
+gem install $MAID
+
+#Install dotfiles
+cp .vimrc $HOME
+cp .zshrc $HOME
+cp rules.rb $HOME/.maid
