@@ -60,19 +60,28 @@ wget -P $HOME/Programs $QTCREATOR_URL
 ROS_VERSION="kinetic"
 ROS="ros-$ROS_VERSION-desktop-full \
   python-rosinstall \
-  ros-kinetic-xacro \
-  ros-kinetic-joy \
-  ros-kinetic-gazebo-ros \
-  ros-kinetic-pcl-ros \
-  ros-kinetic-rosserial \
-  ros-kinetic-stage \
-  ros-kinetic-turtlebot \
-  ros-kinetic-turtlebot-gazebo \
-  ros-kinetic-turtlebot-teleop \
-  ros-kinetic-turtlebot-navigation \
-  ros-kinetic-opencv3 \
-  ros-kinetic-p2os-urdf \
-  "
+  ros-$ROS_VERSION-xacro \
+  ros-$ROS_VERSION-joy \
+  ros-$ROS_VERSION-gazebo-ros \
+  ros-$ROS_VERSION-pcl-ros \
+  ros-$ROS_VERSION-rosserial \
+  ros-$ROS_VERSION-stage \
+  ros-$ROS_VERSION-turtlebot \
+  ros-$ROS_VERSION-turtlebot-gazebo \
+  ros-$ROS_VERSION-turtlebot-teleop \
+  ros-$ROS_VERSION-turtlebot-navigation \
+  ros-$ROS_VERSION-opencv3 \
+  ros-$ROS_VERSION-p2os-urdf \
+  ros-$ROS_VERSION-robot-localization \
+  ros-$ROS_VERSION-joy \
+  ros-$ROS_VERSION-costmap-2d \
+  ros-$ROS_VERSION-amcl \
+  ros-$ROS_VERSION-control-toolbox \
+  ros-$ROS_VERSION-move-base \
+  ros-$ROS_VERSION-hector-gazebo-plugins \
+  ros-$ROS_VERSION-map-server \
+  ros-$ROS_VERSION-turtlebot-stage \
+"
 
 sudo sh -c 'echo "deb http://packages.ros.org/ros/ubuntu $(lsb_release -sc) main" > /etc/apt/sources.list.d/ros-latest.list'
 sudo apt-key adv --keyserver hkp://ha.pool.sks-keyservers.net:80 --recv-key 0xB01FA116
