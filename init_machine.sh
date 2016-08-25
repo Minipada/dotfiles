@@ -81,6 +81,12 @@ ROS="ros-$ROS_VERSION-desktop-full \
   ros-$ROS_VERSION-hector-gazebo-plugins \
   ros-$ROS_VERSION-map-server \
   ros-$ROS_VERSION-turtlebot-stage \
+  ros-$ROS_VERSION-ros-control \
+  ros-$ROS_VERSION-gazebo-ros-control \
+  ros-$ROS_VERSION-joint-state-controller \
+  ros-$ROS_VERSION-effort-controllers \
+  ros-$ROS_VERSION-joint-trajectory-controller \
+  ros-$ROS_VERSION-object-recognition-* \
 "
 
 sudo sh -c 'echo "deb http://packages.ros.org/ros/ubuntu $(lsb_release -sc) main" > /etc/apt/sources.list.d/ros-latest.list'
