@@ -50,10 +50,10 @@ tar -C $HOME/Programs -zxvf pycharm-community-2016.*.tar.gz
 rm pycharm-community-2016.*.tar.gz
 
 #QTCREATOR
-QTCREATOR_URL="curl -s "https://www.qt.io/download-open-source/#section-2" | \
+QTCRATOR_URL=$(curl -s "https://www.qt.io/download-open-source/#section-2" | \
   grep -o '<a target=\"_blank\" href=['"'"'"][^"'"'"']*['"'"'"]' | \
   grep -m 1 opensource-linux-x64-'[0-9]'.\*.run\" | \
-  sed -e 's/^<a target=\"_blank\" href=["'"'"']//' -e 's/["'"'"']$//'"
+  sed -e 's/^<a target=\"_blank\" href=["'"'"']//' -e 's/["'"'"']$//'"""")
 wget -P $HOME/Programs $QTCREATOR_URL
 
 #ROS
