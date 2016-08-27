@@ -146,6 +146,12 @@ sudo apt-get install "$PACKAGES"
 sh -c "$(curl -fsSL https://raw.githubusercontent.com/robbyrussell/oh-my-zsh/master/tools/install.sh)"
 chsh -s /bin/zsh
 
+#Install QTCREATOR ROS PLUGIN
+cd $HOME/Programs/Qt
+git clone --recursive -b master https://github.com/ros-industrial/ros_qtc_plugin
+cd ros_qtc_plugin
+bash setup.sh -d
+
 #Install Git kraken
 sudo dpkg -i $HOME/Desktop/deb/gitkraken-amd64.deb
 
