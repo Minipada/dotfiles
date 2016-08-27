@@ -55,6 +55,9 @@ QTCRATOR_URL=$(curl -s "https://www.qt.io/download-open-source/#section-2" | \
   grep -m 1 opensource-linux-x64-'[0-9]'.\*.run\" | \
   sed -e 's/^<a target=\"_blank\" href=["'"'"']//' -e 's/["'"'"']$//'"""")
 wget -P $HOME/Programs $QTCREATOR_URL
+cd $HOME/Programs
+echo "Install in \"Qt\" folder, not QTX.X.X"
+./$(basename QTCREATOR_URL)
 
 #ROS
 ROS_VERSION="kinetic"
