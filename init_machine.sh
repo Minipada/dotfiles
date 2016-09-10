@@ -32,6 +32,9 @@ GIMP="gimp"
 #GIT KRAKEN
 wget -P $HOME/Desktop/deb https://www.gitkraken.com/download/linux-deb
 
+#JQ
+JQ="jq"
+
 #LATEX
 LATEX="texlive-full"
 
@@ -123,6 +126,7 @@ VLC="vlc"
 ZSH="zsh"
 
 PACKAGES="$CHROME \
+  $JQ \
   $GHEX \
   $GIMP \
   $LATEX \
