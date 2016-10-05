@@ -163,6 +163,16 @@ sudo dpkg -i $HOME/Desktop/deb/gitkraken-amd64.deb
 chmod +x $HOME/Programs/qt-opensource.*
 $HOME/Programs/./qt-opensource.*.run
 
+#Install yaml-cpp library
+git clone https://github.com/jbeder/yaml-cpp
+cd yaml-cpp
+mkdir build
+cmake -DBUILD_SHARED_LIBS=ON -DCMAKE_INSTALL_PREFIX=/usr ..
+make
+sudo make install
+cd ../..
+rm -rf yaml-cpp
+
 #Install maid
 gem install $MAID
 
