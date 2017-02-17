@@ -149,6 +149,9 @@ PACKAGES="$CHROME \
 sudo apt-get update
 sudo apt-get install "$PACKAGES"
 
+#diff-so-fancy
+npm install -g diff-so-fancy
+
 #After everything is set
 #install ohmyzsh
 sh -c "$(curl -fsSL https://raw.githubusercontent.com/robbyrussell/oh-my-zsh/master/tools/install.sh)"
