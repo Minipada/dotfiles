@@ -41,6 +41,9 @@ LATEX="texlive-full"
 #MAID
 MAID="maid"
 
+#NPM
+NPM="npm"
+
 #OKULAR
 OKULAR="okular"
 
@@ -130,6 +133,7 @@ PACKAGES="$CHROME \
   $GHEX \
   $GIMP \
   $LATEX \
+	$NPM \
   $OKULAR \
   $PICOCOM \
   $ROS \
