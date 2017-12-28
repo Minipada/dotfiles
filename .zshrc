@@ -69,5 +69,27 @@ largest () {
   du -a $1 | sort -n -r | head -n $2
 }
 
+# remove exited containers:
+move unused volumes:
+docker_clean_exited () {
+  docker ps --filter status=dead --filter status=exited -aq | xargs -r docker rm -v
+}
+
+# remove unused images:
+docker_clean_unused_images () {
+  docker images --no-trunc | grep '<none>' | awk '{ print $3 }' | xargs -r docker rmi
+}
+
+# remove unused volumes
+docker_clean_unused_volumes () {
+  sudo find '/var/lib/docker/volumes/' -mindepth 1 -maxdepth 1 -type d | grep -vFf <(docker ps -aq | xargs docker inspect | jq -r '.[] | .Mounts | .[] | .Name | select(.)') | xargs -r rm -fr
+}
+
+docker_cleanall () {
+  docker_clean_exited
+  docker_clean_unused_images
+  docker_clean_unused_volumes
+} 
+
 source $HOME/.aliases
 
