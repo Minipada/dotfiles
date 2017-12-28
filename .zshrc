@@ -1,5 +1,5 @@
 # Path to your oh-my-zsh installation.
-  export ZSH=/home/david/.oh-my-zsh
+export ZSH=/home/david/.oh-my-zsh
 
 # Set name of the theme to load.
 # Look in ~/.oh-my-zsh/themes/
@@ -7,14 +7,11 @@
 # time that oh-my-zsh is loaded.
 ZSH_THEME="kolo"
 
-plugins=(git)
+plugins=(git colorize autojump copydir nyan)
 
 source $ZSH/oh-my-zsh.sh
 
 export LANG=en_US.UTF-8
-
-# ssh
-# export SSH_KEY_PATH="~/.ssh/dsa_id"
 
 # Colors in man
 man() {
@@ -34,11 +31,11 @@ autoload -U compinit
 compinit
  
 # matches case insensitive for lowercase
- zstyle ':completion:*' matcher-list '' 'm:{a-zA-Z}={A-Za-z}'
+zstyle ':completion:*' matcher-list '' 'm:{a-zA-Z}={A-Za-z}'
   
 # Completion cache
-  zstyle ':completion:*' use-cache on
-  zstyle ':completion:*' cache-path ~/.zsh_cache
+zstyle ':completion:*' use-cache on
+zstyle ':completion:*' cache-path ~/.zsh_cache
 
 # Color completion
 zmodload zsh/complist
@@ -50,22 +47,6 @@ setopt correctall
   
 autoload colors; colors
    
-# Aliases
-alias ls='ls --color=auto'
-alias ll='ls --color=auto -lh'
-alias lll='ls --color=auto -lh | less'
-alias xs='cd'
-alias sl='ls'
-alias df='df -h'
-alias cls='clear'
-alias 'vi'='vim'
-alias 'm'='make'
-alias 'mc'='make clean'
-
-# Color grep
-export GREP_COLOR=31
-alias grep='grep --color=auto'
- 
 # default editor is vim
 export EDITOR=/usr/bin/vim
   
@@ -75,4 +56,18 @@ HISTSIZE=1000
 SAVEHIST=1000
 export HISTFILE SAVEHIST
 
+#ROS_IP
+export ROS_IP="$(ifconfig  | grep 'inet addr:'| grep -v '127.0.0.1' | cut -d: -f2 | awk '{ print $1}' | head -n 1)"
+
+webmTOmp4 () {
+      ffmpeg -i "$1".webm -qscale 0 "$1".mp4
+}    
+mp4TOmp3 () {
+      ffmpeg -i "$1".mp4 "$1".mp3
+}
+largest () {
+  du -a $1 | sort -n -r | head -n $2
+}
+
 source $HOME/.aliases
+
