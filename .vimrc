@@ -1,104 +1,128 @@
-syntax enable            " enable syntax processing
-set tabstop=2            " number of visual spaces per TAB
-set softtabstop=2        " number of spaces in tab when editing
-set expandtab            " tabs are spaces
-set number               " show line numbers
-:se mouse+=a             " But doesn't select it with mouse
-set cursorline           " highlight current line
-set incsearch            " search as characters are entered
-set hlsearch             " highlight matches
-set linebreak            " don't break words in middle
-set enc=utf-8            " utf-8 encoding
-set autoindent
-set smartindent " turn on Vim's magic indenting
-" ...but don't move # lines to the beginning.  See :help smartindent
-inoremap # #
+# Path to your oh-my-zsh installation.
+export ZSH=~/.oh-my-zsh
 
-" turn off search highlight
-nnoremap <leader><space> :nohlsearch<CR> 
-set foldenable           " enable folding
-set foldlevelstart=10    " open most folds by default
-set foldnestmax=10       " 10 nested fold max
+# Set name of the theme to load.
+# Look in ~/.oh-my-zsh/themes/
+# Optionally, if you set this to "random", it'll load a random theme each
+# time that oh-my-zsh is loaded.
+ZSH_THEME="kolo"
 
-" space open/closes folds
-nnoremap <space> za
-set foldmethod=indent   " fold based on indent level
+plugins=(git colorize autojump copydir nyan)
 
-" move vertically by visual line
-nnoremap j gj
-nnoremap k gk
+source $ZSH/oh-my-zsh.sh
 
-" move to beginning/end of line
-nnoremap B ^
-nnoremap E $
+export LANG=en_US.UTF-8
 
-" $/^ doesn't do anything
-nnoremap $ <nop>
-nnoremap ^ <nop>
+# Colors in man
+man() {
+  env \
+    LESS_TERMCAP_mb=$(printf "\e[1;31m") \
+    LESS_TERMCAP_md=$(printf "\e[1;31m") \
+    LESS_TERMCAP_me=$(printf "\e[0m") \
+    LESS_TERMCAP_se=$(printf "\e[0m") \
+    LESS_TERMCAP_so=$(printf "\e[1;44;33m") \
+    LESS_TERMCAP_ue=$(printf "\e[0m") \
+    LESS_TERMCAP_us=$(printf "\e[1;32m") \
+      man "$@"
+}
 
-" highlight last inserted text
-nnoremap gV `[v`]
+# Autocompletion
+autoload -U compinit
+compinit
+ 
+# matches case insensitive for lowercase
+zstyle ':completion:*' matcher-list '' 'm:{a-zA-Z}={A-Za-z}'
+  
+# Completion cache
+zstyle ':completion:*' use-cache on
+zstyle ':completion:*' cache-path ~/.zsh_cache
 
-autocmd FileType make set noexpandtab " Use tabs instead of spaces, otherwise `make` will hate you
+# Color completion
+zmodload zsh/complist
+setopt extendedglob
+zstyle ':completion:*:*:kill:*:processes' list-colors "=(#b) #([0-9]#)*=36=31"
+ 
+# Command correction
+setopt correctall
+  
+autoload colors; colors
+   
+# Aliases
+alias ls='ls --color=auto'
+alias ll='ls --color=auto -lh'
+alias lll='ls --color=auto -lh | less'
+alias xs='cd'
+alias sl='ls'
+alias df='df -h'
+alias cls='clear'
+alias 'vi'='vim'
+alias 'm'='make'
+alias 'mc'='make clean'
+alias 'pj'="rosrun plotjuggler PlotJuggler"
+alias "gitst"="git status"
+alias "gitcp"="git cherry-pick"
+alias gitcc="git log --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit"
+alias vim='nocorrect vim' 
+alias make='nocorrect make'
+alias gitkraken='nocorrect gitkraken'
+alias grep='grep --color=auto'
 
+# Color grep
+export GREP_COLOR=31
+ 
+# default editor is vim
+export EDITOR=/usr/bin/vim
+  
+# History
+HISTFILE=~/.history
 
-set foldmethod=indent " Indent based on how many tabstops there are
+export ROS_IP="$(ifconfig  | grep 'inet addr:'| grep -v '127.0.0.1' | cut -d: -f2 | awk '{ print $1}' | head -n 1)"
 
-" [vim: enable folds but don't automatically close them](http://superuser.com/questions/169973/vim-enable-folds-but-dont-automatically-close-themhttp://superuser.com/questions/169973/vim-enable-folds-but-dont-automatically-close-them)
-set foldlevelstart=99
+source ~/.oh-my-zsh/custom/plugins/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
 
-" Various UI
-" ----------
+webmTOmp4 () {
+  ffmpeg -i "$1".webm -qscale 0 "$1".mp4
+}    
+mp4TOmp3 () {
+  ffmpeg -i "$1".mp4 "$1".mp3
+}
 
-set wildmenu " Gives feedback when completing on the vim command line
-set wildignore+=*.o,*.obj,*~,.lo,*.swp,*.pyc,*.class " File extensions to ignore in the wildmenu
+largest () {
+  du -a $1 | sort -n -r | head -n $2
+}
 
-" Directories for swp files
-set backupdir=~/.vim/backup
-set directory=~/.vim/backup
-au BufWrite /private/tmp/crontab.* set nowritebackup " don't write backup file when called by "crontab -e"; it breaks
-au BufWrite /private/etc/pw.* set nowritebackup " same for "chpass"; breaks if backups written
+# remove exited containers:
+docker_clean_exited () {
+  docker ps --filter status=dead --filter status=exited -aq | xargs -r docker rm -v
+}
 
-" Switch keybindings between moving by display and moving by physical lines - that is, 'k' moves up by a display line, 'gk' by a physical line.
-" (This might be confusing if you're not used to it, but it's how most GUI apps behave.)
-noremap k gk
-noremap j gj
-noremap gk k
-noremap gj j
+# remove unused images:
+docker_clean_unused_images () {
+  docker images --no-trunc | grep '<none>' | awk '{ print $3 }' | xargs -r docker rmi
+}
 
-" Shift-tab to insert a hard tab
-imap <silent> <S-tab> <C-v><tab>
+# remove unused volumes
+docker_clean_unused_volumes () {
+  sudo find '/var/lib/docker/volumes/' -mindepth 1 -maxdepth 1 -type d | grep -vFf <(docker ps -aq | xargs docker inspect | jq -r '.[] | .Mounts | .[] | .Name | select(.)') | xargs -r rm -fr
+}
 
-" Insert my name
-nmap ,a AAuthor: David Bensoussan <david.bensoussan.job@gmail.com><esc>
+docker_cleanall () {
+  docker_clean_exited
+  docker_clean_unused_images
+  docker_clean_unused_volumes
+} 
 
-set ignorecase " Case-insensitive searches
-set smartcase  " This will have searches ignore case unless I use a capital letter
-set incsearch  " Start searching right away
+removecontainers() {
+  docker stop $(docker ps -aq)
+  docker rm $(docker ps -aq)
+}
 
+docker_armaggedon() {
+  removecontainers
+  docker network prune -f
+  docker rmi -f $(docker images --filter dangling=true -qa)
+  docker volume rm $(docker volume ls --filter dangling=true -q)
+  docker rmi -f $(docker images -qa)
+}
 
-" Language-specific
-" -----------------
-" C
-augroup lang_c
-    au!
-    " C compile
-    autocmd BufEnter *.c map <F4> :w<CR>:!gcc -Wall -g -c % -o %< ; true<CR>
-    " C compile and run (w/o, w/ parameters)
-    autocmd BufEnter *.c map <F5> :w<CR>:!gcc -Wall -g % -o %< && ./%<<CR>
-    autocmd BufEnter *.c map <F6> :w<CR>:!gcc -Wall -g % -o %< && ./%<<SPACE>
-    " C debug (w/o, w/ parameters)
-    autocmd BufEnter *.c map <F7> :w<CR>:!gcc -Wall -g % -o %< && cgdb %<<CR>
-    autocmd BufEnter *.c map <F8> :w<CR>:!gcc -Wall -g % -o %< && cgdb %<<SPACE>
-    " Memory leaks (w/o, w/ parameters)
-    autocmd BufEnter *.c map <ESC><F5> :w<CR>:!gcc -Wall -g % -o %< && valgrind ./%<<CR>
-    autocmd BufEnter *.c map <ESC><F6> :w<CR>:!gcc -Wall -g % -o %< && valgrind ./%<<SPACE>
-    
-    " C no spelling
-    " autocmd BufRead *.c setlocal nospell
-
-    " Automatic ctags
-augroup END
-
-" Resize splits when window size changes
-au VimResized * exe "normal! \<c-w>="
+source $HOME/.aliases

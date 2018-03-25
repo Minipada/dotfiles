@@ -1,24 +1,9 @@
 #Init folders
 mkdir -p $HOME/Programs
 mkdir -p $HOME/Development
-mkdir -p $HOME/Desktop/deb
-mkdir -p $HOME/Desktop/pdf
-mkdir -p $HOME/Desktop/pem
-mkdir -p $HOME/Desktop/scripts
-mkdir -p $HOME/Desktop/sd-img
 
-#BOOST
-BOOST_VERSION_MAIN="1"
-BOOST_VERSION_SUB="58"
-OUTPUT_BOOST_TAR="boost_$BOOST_VERSION_MAIN.$BOOST_VERSION_SUB.tar.gz"
-OUTPUT_BOOST="boost_$BOOST_VERSION_MAIN.$BOOST_VERSION_SUB"
-wget --output-document=$OUTPUT_BOOST https://sourceforge.net/projects/boost/files/boost/$BOOST_VERSION_MAIN.$BOOST_VERSION_SUB.0/boost_$BOOST_VERSION_MAIN\_$BOOST_VERSION_SUB\_0.tar.gz/download
-tar -xzvf $OUTPUT_BOOST
-cd $OUTPUT_BOOST
-./bootstrap.sh --libdir=/usr/lib/x86_64-linux-gnu
-./b2
-sudo ./b2 install
-rm -rf $OUTPUT_BOOST
+#ASCIINEMA
+ASCIINEMA="asciinema"
 
 #Chrome
 CHROME="google-chrome-stable"
@@ -50,20 +35,12 @@ OKULAR="okular"
 #PICOCOM
 PICOCOM="picocom"
 
-#PYCHARM
-PYCHARM_URL="https://www.jetbrains.com/pycharm/download/download-thanks.html?platform=linux&code=PCC"
-tar -C $HOME/Programs -zxvf pycharm-community-2016.*.tar.gz
-rm pycharm-community-2016.*.tar.gz
+#PIP
+PIP="python-pip"
 
-#QTCREATOR
-QTCRATOR_URL=$(curl -s "https://www.qt.io/download-open-source/#section-2" | \
-  grep -o '<a target=\"_blank\" href=['"'"'"][^"'"'"']*['"'"'"]' | \
-  grep -m 1 opensource-linux-x64-'[0-9]'.\*.run\" | \
-  sed -e 's/^<a target=\"_blank\" href=["'"'"']//' -e 's/["'"'"']$//'"""")
-wget -P $HOME/Programs $QTCREATOR_URL
-cd $HOME/Programs
-echo "Install in \"Qt\" folder, not QTX.X.X"
-./$(basename QTCREATOR_URL)
+#PYCHARM
+sudo add-apt-repository ppa:mystic-mirage/pycharm
+PYCHARM="pycharm-community"
 
 #ROS
 ROS_VERSION="kinetic"
@@ -116,19 +93,18 @@ echo deb http://repository.spotify.com stable non-free | sudo tee /etc/apt/sourc
 SPOTIFY="spotify-client"
 
 #SUBLIME
-sudo add-apt-repository ppa:webupd8team/sublime-text-2
+sudo add-apt-repository ppa:webupd8team/sublime-text-3
 SUBLIME="sublime-text"
 
 #TERMINATOR
 TERMINATOR="terminator"
 
-#VLC
-VLC="vlc"
-
 #ZSH
 ZSH="zsh"
 
-PACKAGES="$CHROME \
+PACKAGES=" \
+  $ASCIINEMA \
+  $CHROME \
   $JQ \
   $GHEX \
   $GIMP \
@@ -138,13 +114,14 @@ PACKAGES="$CHROME \
   $PICOCOM \
   $ROS \
   $RUBY \
+  $PIP \
+  $PYCHARM \
   $SKYPE \
   $SPOTIFY \
   $SUBLIME \
   $TERMINATOR \
-  $VLC \
   $ZSH \
-  "
+"
 
 sudo apt-get update
 sudo apt-get install "$PACKAGES"
@@ -166,24 +143,14 @@ bash setup.sh -d
 #Install Git kraken
 sudo dpkg -i $HOME/Desktop/deb/gitkraken-amd64.deb
 
-#Install Qtcreator
-chmod +x $HOME/Programs/qt-opensource.*
-$HOME/Programs/./qt-opensource.*.run
-
-#Install yaml-cpp library
-git clone https://github.com/jbeder/yaml-cpp
-cd yaml-cpp
-mkdir build
-cmake -DBUILD_SHARED_LIBS=ON -DCMAKE_INSTALL_PREFIX=/usr ..
-make
-sudo make install
-cd ../..
-rm -rf yaml-cpp
-
 #Install maid
 gem install $MAID
 
 #Install dotfiles
 cp .vimrc $HOME
 cp .zshrc $HOME
-cp rules.rb $HOME/.maid
+cp maid/rules.rb $HOME/.maid
+cp cron.weekly/* /etc/cron.weekly
+
+sudo npm install --global git-open
+pip install speedtest-cli

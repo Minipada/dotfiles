@@ -27,23 +27,20 @@ Maid.rules do
   # what they do, you might run into unwanted results!
 
   rule 'pdf handler' do
-    move(dir('~/Downloads/*.pdf'), '~/Desktop/pdf')
-  end
-
-  rule 'deb handler' do
-    move(dir('~/Downloads/*.deb'), '~/Desktop/deb')
+    move(dir('~/Downloads/*.pdf'), '~/Development_david/to_be_deleted')
   end
 
   rule 'pem handler' do
-    move(dir('~/Downloads/*.pem'), '~/Desktop/pem')
-  end
-
-  rule 'sd-img handler' do
-    move(dir('~/Downloads/*.sd-img'), '~/Desktop/sd-img')
+    move(dir('~/Downloads/*.pem'), '~/Development_david/to_be_deleted')
   end
 
   rule 'script handler' do
-    move move(dir('~/Download/*.sh'), '~/Desktop/scripts')
+    move(dir('~/Download/*.sh'), '~/Development_david/to_be_deleted')
+    move(dir('~/Download/*.py'), '~/Development_david/to_be_deleted')
+  end
+  
+  rule 'zip handler' do
+    move(dir('~/Download/*.zip'), '~/Desktop/Development_david/to_be_deleted')
   end
 
   rule 'trash the rest' do
