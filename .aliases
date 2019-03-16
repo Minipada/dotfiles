@@ -4,25 +4,18 @@ alias ...="cd ../.."
 alias ....="cd ../../.."
 alias .....="cd ../../../.."
 alias ~="cd ~" # `cd` is probably faster to type though
-alias cat="pygmentize -g"
-alias ls='ls --color=auto'
-alias ll='ls --color=auto -lh'
-alias lll='ls --color=auto -lh | less'
-alias xs='cd'
-alias sl='ls'
-alias df='df -h'
-alias cls='clear'
-alias 'vi'='vim'
-alias 'm'='make'
-alias 'mc'='make clean'
-alias vim='nocorrect vim' 
-alias make='nocorrect make'
-alias gitkraken='nocorrect gitkraken'
-
-# Color grep
-export GREP_COLOR=31
-alias grep='grep --color=auto'  
 
 git config --global alias.undo '!f() { \
     git reset --hard $(git rev-parse --abbrev-ref HEAD)@{${1-1}}; \
 }; f'
+
+#catkin_make_target
+catkin_make_target(){
+  catkin_make 
+    -DCMAKE_C_COMPILER="arm-poky-linux-gnueabi-gcc  -march=armv7-a -marm  -mthumb-interwork -mfloat-abi=hard -mfpu=neon-vfpv4 -mtune=cortex-a7 --sysroot=$SDKTARGETSYSROOT" \
+    -DCMAKE_CXX_COMPILER="arm-poky-linux-gnueabi-g++  -march=armv7-a -marm  -mthumb-interwork -mfloat-abi=hard -mfpu=neon-vfpv4 -mtune=cortex-a7 --sysroot=$SDKTARGETSYSROOT" \
+    -DCMAKE_LINKER="arm-poky-linux-gnueabi-ld  --sysroot=$SDKTARGETSYSROOT" \
+    -DCMAKE_C_FLAGS=" -O2 -pipe -g -feliminate-unused-debug-types" \
+    -DCMAKE_CXX_FLAGS="-O2 -pipe -g -feliminate-unused-debug-types" \
+    -DCMAKE_EXE_LINKER_FLAGS="-Wl,-O1 -Wl,--hash-style=gnu -Wl,--as-needed"
+}

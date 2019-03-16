@@ -1,156 +1,130 @@
-#Init folders
+#!/bin/sh
+
+set -e
+
 mkdir -p $HOME/Programs
 mkdir -p $HOME/Development
 
-#ASCIINEMA
-ASCIINEMA="asciinema"
+export ROS_VERSION=melodic
+export dl=$HOME/Downloads
 
-#Chrome
-CHROME="google-chrome-stable"
+add_repos () {
+  sudo apt-get update
+  sudo apt-get install -y apt-transport-https software-properties-common
+  
+  curl -s https://packages.cloud.google.com/apt/doc/apt-key.gpg | sudo apt-key add -
+  echo "deb https://apt.kubernetes.io/ kubernetes-xenial main" | sudo tee -a /etc/apt/sources.list.d/kubernetes.list
 
-#GHEX
-GHEX="ghex"
+  sudo sh -c 'echo deb http://packages.ros.org/ros/ubuntu $(lsb_release -sc) main > /etc/apt/sources.list.d/ros-latest.list'
+  sudo apt-key adv --keyserver hkp://ha.pool.sks-keyservers.net:80 --recv-key 421C365BD9FF1F717815A3895523BAEEB01FA116
 
-#GIMP
-GIMP="gimp"
+  sudo apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys 931FF8E79F0876134EDDBDCCA87FF9DF48BF1C90
+  echo deb http://repository.spotify.com stable non-free | sudo tee /etc/apt/sources.list.d/spotify.list
 
-#GIT KRAKEN
-wget -P $HOME/Desktop/deb https://www.gitkraken.com/download/linux-deb
+  sudo add-apt-repository universe
+}
 
-#JQ
-JQ="jq"
+install_from_deb() {
+  wget -O ${dl}/gitkraken-amd64.deb https://release.gitkraken.com/linux/gitkraken-amd64.deb
+  wget -O ${dl}/skypeforlinux-64.rpm https://go.skype.com/skypeforlinux-64.rpm
+  wget -O ${dl}/franz_5.0.0_amd64.deb https://github.com/meetfranz/franz/releases/download/v5.0.0/franz_5.0.0_amd64.deb
+  wget -O ${dl}/encryptr_2.0.0-1_amd64.deb https://spideroak.com/dist/encryptr/signed/linux/deb/encryptr_2.0.0-1_amd64.deb
 
-#LATEX
-LATEX="texlive-full"
+  sudo apt-get update
+  sudo apt-get install alien
 
-#MAID
-MAID="maid"
+  sudo dpkg -i ${dl}/gitkraken-amd64.deb 
+  sudo dpkg -i ${dl}/franz_5.0.0_amd64.deb
+  sudo dpkg -i ${dl}/encryptr_2.0.0-1_amd64.deb
 
-#NPM
-NPM="npm"
+  sudo alien ${dl}/skypeforlinux-64.rpm
+  sudo dpkg -i ${dl}/skypeforlinux-64.deb
+}
 
-#OKULAR
-OKULAR="okular"
+install_zsh_theme () {
+  wget -O ~/.oh-my-zsh/themes/superkolo.zsh-theme https://raw.githubusercontent.com/Minipada/superkolo/master/superkolo.zsh-theme
+}
 
-#PICOCOM
-PICOCOM="picocom"
+install_jx () {
+  mkdir -p ~/.jx/bin
+  curl -L https://github.com/jenkins-x/jx/releases/download/v1.3.978/jx-linux-amd64.tar.gz | tar xzv -C ~/.jx/bin
+}
 
-#PIP
-PIP="python-pip"
+install_minikube () {
+  curl -Lo minikube https://storage.googleapis.com/minikube/releases/latest/minikube-linux-amd64 \
+  && chmod +x minikube
+  sudo mv minikube /usr/local/bin
+}
 
-#PYCHARM
-sudo add-apt-repository ppa:mystic-mirage/pycharm
-PYCHARM="pycharm-community"
+install_docker() {
+  curl -fsSL https://get.docker.com -o get-docker.sh
+  sh get-docker.sh
+  rm get-docker.sh
+  sudo usermod -aG docker ${USER}
+}
 
-#ROS
-ROS_VERSION="kinetic"
-ROS="ros-$ROS_VERSION-desktop-full \
+install_kops () {
+  curl -Lo kops https://github.com/kubernetes/kops/releases/download/$(curl -s https://api.github.com/repos/kubernetes/kops/releases/latest | grep tag_name | cut -d '"' -f 4)/kops-linux-amd64
+  chmod +x ./kops
+  sudo mv ./kops /usr/local/bin/
+}
+
+install_awless () {
+  curl https://raw.githubusercontent.com/wallix/awless/master/getawless.sh | bash
+  sudo mv awless /usr/local/bin
+}
+
+packages=" \
+  asciinema \
+  bridge-utils \
+  cpu-checker \
+  gconf2 \
+  ghex \
+  gimp \
+  gvfs-bin \
+  jq \
+  kubectl \
+  libappindicator1 \
+  libvirt-bin \
+  nvidia-384 \
+  okular \
+  picocom \
+  python-pip \
   python-rosinstall \
-  ros-$ROS_VERSION-xacro \
-  ros-$ROS_VERSION-joy \
-  ros-$ROS_VERSION-gazebo-ros \
-  ros-$ROS_VERSION-pcl-ros \
-  ros-$ROS_VERSION-rosserial \
-  ros-$ROS_VERSION-stage \
-  ros-$ROS_VERSION-turtlebot \
-  ros-$ROS_VERSION-turtlebot-gazebo \
-  ros-$ROS_VERSION-turtlebot-teleop \
-  ros-$ROS_VERSION-turtlebot-navigation \
-  ros-$ROS_VERSION-opencv3 \
-  ros-$ROS_VERSION-p2os-urdf \
-  ros-$ROS_VERSION-robot-localization \
-  ros-$ROS_VERSION-joy \
-  ros-$ROS_VERSION-costmap-2d \
-  ros-$ROS_VERSION-amcl \
-  ros-$ROS_VERSION-control-toolbox \
-  ros-$ROS_VERSION-move-base \
-  ros-$ROS_VERSION-hector-gazebo-plugins \
-  ros-$ROS_VERSION-map-server \
-  ros-$ROS_VERSION-turtlebot-stage \
-  ros-$ROS_VERSION-ros-control \
-  ros-$ROS_VERSION-gazebo-ros-control \
-  ros-$ROS_VERSION-joint-state-controller \
-  ros-$ROS_VERSION-effort-controllers \
-  ros-$ROS_VERSION-joint-trajectory-controller \
-  ros-$ROS_VERSION-object-recognition-* \
+  qemu-kvm \
+  ros-${ROS_VERSION}-desktop-full \
+  spotify-client \
+  terminator \
+  virtinst \
+  virtualbox \
+  virtualbox-dkms \
+  zsh
 "
 
-sudo sh -c 'echo "deb http://packages.ros.org/ros/ubuntu $(lsb_release -sc) main" > /etc/apt/sources.list.d/ros-latest.list'
-sudo apt-key adv --keyserver hkp://ha.pool.sks-keyservers.net:80 --recv-key 0xB01FA116
-
-#RUBY - needed for maid
-RUBY="ruby"
-
-#SKYPE
-SKYPE="skype"
-
-#SPOTIFY
-# 1. Add the Spotify repository signing key to be able to verify downloaded packages
-sudo apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys BBEBDCB318AD50EC6865090613B00F1FD2C19886
-# 2. Add the Spotify repository
-echo deb http://repository.spotify.com stable non-free | sudo tee /etc/apt/sources.list.d/spotify.list
-
-SPOTIFY="spotify-client"
-
-#SUBLIME
-sudo add-apt-repository ppa:webupd8team/sublime-text-3
-SUBLIME="sublime-text"
-
-#TERMINATOR
-TERMINATOR="terminator"
-
-#ZSH
-ZSH="zsh"
-
-PACKAGES=" \
-  $ASCIINEMA \
-  $CHROME \
-  $JQ \
-  $GHEX \
-  $GIMP \
-  $LATEX \
-	$NPM \
-  $OKULAR \
-  $PICOCOM \
-  $ROS \
-  $RUBY \
-  $PIP \
-  $PYCHARM \
-  $SKYPE \
-  $SPOTIFY \
-  $SUBLIME \
-  $TERMINATOR \
-  $ZSH \
+pip_packages=" \
+  ansible \
+  bloom \
+  catkin-tools \
 "
+
+add_repos
 
 sudo apt-get update
-sudo apt-get install "$PACKAGES"
+sudo apt-get install -y ${packages}
+install_awless
+install_docker
+install_jx
+install_kops
+install_minikube
+sudo pip install -U ${pip_packages}
 
-#diff-so-fancy
-npm install -g diff-so-fancy
+install_from_deb
 
-#After everything is set
-#install ohmyzsh
 sh -c "$(curl -fsSL https://raw.githubusercontent.com/robbyrussell/oh-my-zsh/master/tools/install.sh)"
 chsh -s /bin/zsh
+install_zsh_theme
 
-#Install QTCREATOR ROS PLUGIN
-cd $HOME/Programs/Qt
-git clone --recursive -b master https://github.com/ros-industrial/ros_qtc_plugin
-cd ros_qtc_plugin
-bash setup.sh -d
-
-#Install Git kraken
-sudo dpkg -i $HOME/Desktop/deb/gitkraken-amd64.deb
-
-#Install maid
-gem install $MAID
-
-#Install dotfiles
 cp .vimrc $HOME
 cp .zshrc $HOME
-cp maid/rules.rb $HOME/.maid
-cp cron.weekly/* /etc/cron.weekly
 
-sudo npm install --global git-open
-pip install speedtest-cli
+kvm-ok
