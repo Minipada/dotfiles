@@ -1,0 +1,101 @@
+background yes
+use_xft yes
+xftalpha 0.1
+xftfont Raleway:size=9
+update_interval 1
+total_run_times 0
+own_window yes
+own_window_type dock
+own_window_transparent yes
+own_window_hints undecorated,below,sticky,skip_taskbar,skip_pager
+own_window_argb_visual yes
+own_window_argb_value 255
+double_buffer yes
+minimum_size 400 4
+maximum_width 450
+draw_shades no
+draw_outline no
+draw_borders yes
+draw_graph_borders no
+default_color gray
+default_shade_color red
+default_outline_color black
+alignment middle_right
+gap_x 15
+gap_y 25
+if_up_strictness address
+no_buffers true
+uppercase no
+cpu_avg_samples 2
+net_avg_samples 1
+override_utf8_locale no
+use_spacer right
+text_buffer_size 256
+
+TEXT
+${font Montserrat:size=20}$alignc${color Ivory}SYSTEM INFO${font}
+${color DimGray}
+${font Montserrat:bold:size=9}${color Ivory}SESSION ${color DarkGray} ${hr 2}
+$font${color DimGray}User $alignr${execi 3600 whoami}@$nodename
+Uptime $alignr${uptime}
+
+${font Montserrat:bold:size=9}${color Ivory}SYSTEM ${color DarkGray} ${hr 2}
+$font${color DimGray}Machine$alignr${execi 3600 cat /sys/class/dmi/id/sys_vendor} ${execi 3600 cat /sys/class/dmi/id/product_name}
+Operating System $alignr${execi 3600 grep "^PRETTY_NAME=" /etc/os-release | sed 's/^.*=\"//g' | sed 's/\"$//g'}
+Kernel $alignr$kernel $machine
+Processor $alignr${execi 3600 cat /proc/cpuinfo | grep 'model name' | sed 's\.*: \\g' | uniq} x${execi 3600  cat /proc/cpuinfo | grep 'processor' | wc -l}
+File System $alignr${fs_type}
+
+${font Montserrat:bold:size=9}${color Ivory}PROCESSORS ${color DarkGray}${hr 2}
+$font${color DimGray}System Load $alignr$loadavg
+${color DimGray}CPU 1  ${cpu cpu1}% ${color DarkGray}${cpubar cpu1}
+${color DimGray}CPU 2  ${cpu cpu2}% ${color DarkGray}${cpubar cpu2}
+${color DimGray}CPU 3  ${cpu cpu3}% ${color DarkGray}${cpubar cpu3}
+${color DimGray}CPU 4  ${cpu cpu4}% ${color DarkGray}${cpubar cpu4}
+${color DimGray}CPU 5  ${cpu cpu5}% ${color DarkGray}${cpubar cpu5}
+${color DimGray}CPU 6  ${cpu cpu6}% ${color DarkGray}${cpubar cpu6}
+${color DimGray}CPU 7  ${cpu cpu7}% ${color DarkGray}${cpubar cpu7}
+${color DimGray}CPU 8  ${cpu cpu8}% ${color DarkGray}${cpubar cpu8}
+${color DimGray}CPU 9  ${cpu cpu9}% ${color DarkGray}${cpubar cpu9}
+${color DimGray}CPU 10  ${cpu cpu10}% ${color DarkGray}${cpubar cpu10}
+${color DimGray}CPU 11  ${cpu cpu11}% ${color DarkGray}${cpubar cpu11}
+${color DimGray}CPU 12  ${cpu cpu12}% ${color DarkGray}${cpubar cpu12}
+
+${font Montserrat:bold:size=9}${color Ivory}USAGE ${color DarkGray}${hr 2}
+weather 
+$font${color DimGray}Battery $alignc${battery_time BAT0} $alignr ${battery_short BAT0}
+${color DarkGray}${battery_bar BAT0}
+$font${color DimGray}Memory $alignc $mem / $memmax $alignr $memperc%
+${color DarkGray}$membar
+$font${color DimGray}Storage (/home) $alignc ${fs_used /home} / ${fs_size /home} $alignr ${fs_free_perc /home}%
+${color DarkGray}${fs_bar /home}
+
+${font Montserrat:bold:size=9}${color Ivory}PROCESSES (CPU USAGE) ${color DarkGray}${hr 2}
+${color DimGray}$font${top name 1}${alignr}${top cpu 1} %
+$font${top name 2}${alignr}${top cpu 2} %
+$font${top name 3}${alignr}${top cpu 3} %
+$font${top name 4}${alignr}${top cpu 4} %
+$font${top name 5}${alignr}${top cpu 5} %
+
+${font Montserrat:bold:size=9}${color Ivory}PROCESSES (RAM USAGE) ${color DarkGray}${hr 2}
+${color DimGray}$font${top_mem name 1}${alignr}${top mem 1} %
+${top_mem name 2}${alignr}${top mem 2} %
+${top_mem name 3}${alignr}${top mem 3} %
+${top_mem name 4}${alignr}${top mem 4} %
+${top_mem name 5}${alignr}${top mem 5} %
+
+${if_up wlp1s0}${font Montserrat:bold:size=9}${color Ivory}NETWORK ${color DarkGray}${hr 2}
+$font${color DimGray}IP address $alignr ${addr wlp1s0}
+SSID $alignr${wireless_essid wlp1s0} (${wireless_link_qual wlp1s0}%)
+Downstream $alignr${downspeed wlp1s0} (${totaldown wlp1s0})
+Upstream $alignr${upspeed wlp1s0} (${totalup wlp1s0})$endif${if_up eth0}
+${font Montserrat:bold:size=9}${color Ivory}NETWORK ${color DarkGray}${hr 2}
+$font${color DimGray}IP address $alignr ${addr eth0}
+Downstream $alignr${downspeed eth} (${totaldown eth0})
+${downstreamgraph}
+Upstream $alignr${upspeed eth0} (${totalup eth0})$endif
+
+${font Montserrat:bold:size=9}${color Ivory}TIME ${color DarkGray}${hr 2}
+${color Ivory}${font Montserrat:size=60}$alignc${time %-I:%M %p}${font}
+${font Montserrat:bold:size=12}$alignc${time %A, %d %B %Y}
+

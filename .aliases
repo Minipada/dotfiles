@@ -5,17 +5,45 @@ alias ....="cd ../../.."
 alias .....="cd ../../../.."
 alias ~="cd ~" # `cd` is probably faster to type though
 
-git config --global alias.undo '!f() { \
-    git reset --hard $(git rev-parse --abbrev-ref HEAD)@{${1-1}}; \
-}; f'
+alias ls='ls --color=auto'
+alias ll='ls --color=auto -lh'
+alias lll='ls --color=auto -lh | less'
+alias xs='cd'
+alias sl='ls'
+alias df='df -h'
+alias cls=clear'
+alias vi='vim'
+alias m='make'
+alias mc='make clean'
+alias gitst="git status --column"
+alias gitcp="git cherry-pick"
+alias git_colored_commits="git log --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit"
 
-#catkin_make_target
-catkin_make_target(){
-  catkin_make 
-    -DCMAKE_C_COMPILER="arm-poky-linux-gnueabi-gcc  -march=armv7-a -marm  -mthumb-interwork -mfloat-abi=hard -mfpu=neon-vfpv4 -mtune=cortex-a7 --sysroot=$SDKTARGETSYSROOT" \
-    -DCMAKE_CXX_COMPILER="arm-poky-linux-gnueabi-g++  -march=armv7-a -marm  -mthumb-interwork -mfloat-abi=hard -mfpu=neon-vfpv4 -mtune=cortex-a7 --sysroot=$SDKTARGETSYSROOT" \
-    -DCMAKE_LINKER="arm-poky-linux-gnueabi-ld  --sysroot=$SDKTARGETSYSROOT" \
-    -DCMAKE_C_FLAGS=" -O2 -pipe -g -feliminate-unused-debug-types" \
-    -DCMAKE_CXX_FLAGS="-O2 -pipe -g -feliminate-unused-debug-types" \
-    -DCMAKE_EXE_LINKER_FLAGS="-Wl,-O1 -Wl,--hash-style=gnu -Wl,--as-needed"
+# Color grep
+export GREP_COLOR=31
+alias grep='grep --color=auto'
+
+alias vim='nocorrect vim'
+alias make='nocorrect make'
+alias gitkraken='nocorrect gitkraken'
+
+# remove exited containers:
+docker_clean_exited () {
+  docker ps --filter status=dead --filter status=exited -aq | xargs -r docker rm -v
+}
+
+# remove unused images:
+docker_clean_unused_images () {
+  docker images --no-trunc | grep '<none>' | awk '{ print $3 }' | xargs -r docker rmi
+}
+
+# remove unused volumes
+docker_clean_unused_volumes () {
+  sudo find '/var/lib/docker/volumes/' -mindepth 1 -maxdepth 1 -type d | grep -vFf <(docker ps -aq | xargs docker inspect | jq -r '.[] | .Mounts | .[] | .Name | select(.)') | xargs -r rm -fr
+}
+
+docker_cleanall () {
+  docker_clean_exited
+  docker_clean_unused_images
+  docker_clean_unused_volumes
 }
