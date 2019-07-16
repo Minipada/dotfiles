@@ -11,7 +11,7 @@ alias lll='ls --color=auto -lh | less'
 alias xs='cd'
 alias sl='ls'
 alias df='df -h'
-alias cls=clear'
+alias cls='clear'
 alias vi='vim'
 alias m='make'
 alias mc='make clean'
@@ -46,4 +46,19 @@ docker_cleanall () {
   docker_clean_exited
   docker_clean_unused_images
   docker_clean_unused_volumes
+}
+
+function gi() { curl -L -s https://www.gitignore.io/api/$@ ;}
+
+remove_containers() {
+  docker stop $(docker ps -aq)
+  docker rm $(docker ps -aq)
+}
+
+armaggedon() {
+  remove_containers
+  docker network prune -f
+  docker rmi -f $(docker images --filter dangling=true -qa)
+  docker volume rm $(docker volume ls --filter dangling=true -q)
+  docker rmi -f $(docker images -qa)
 }

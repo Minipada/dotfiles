@@ -9,9 +9,7 @@ ZSH_THEME="superkolo"
 
 plugins=(git colorize copydir)
 
-source $ZSH/oh-my-zsh.sh
-
-export LANG=en_US.UTF-8
+source ${ZSH}/oh-my-zsh.sh
 
 # Colors in man
 man() {
@@ -56,23 +54,11 @@ HISTSIZE=1000000
 SAVEHIST=1000000
 export HISTFILE SAVEHIST
 
-source $HOME/.aliases
+source ${HOME}/.aliases
 
-function gi() { curl -L -s https://www.gitignore.io/api/$@ ;}
-
-remove_containers() {
-  docker stop $(docker ps -aq)
-  docker rm $(docker ps -aq)
-}
-
-armaggedon() {
-  removecontainers
-  docker network prune -f
-  docker rmi -f $(docker images --filter dangling=true -qa)
-  docker volume rm $(docker volume ls --filter dangling=true -q)
-  docker rmi -f $(docker images -qa)
-}
-
-export PATH=~/.npm-global/bin:$PATH
+export PATH=~/.npm-global/bin:${PATH}
 export GOROOT=/usr/lib/go
-export PATH=$GOPATH/bin:$GOROOT/bin:$PATH
+export GOPATH=/${HOME}/go
+export PATH=${GOPATH}/bin:${GOROOT}/bin:${PATH}
+export LC_ALL=en_US.UTF-8
+export LANG=en_US.UTF-8

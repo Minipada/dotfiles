@@ -15,7 +15,7 @@ set paste             " no crazy tabs when pasting
 inoremap # #
 
 " turn off search highlight
-nnoremap <leader><space> :nohlsearch<CR> 
+nnoremap <leader><space> :nohlsearch<CR>
 set foldenable           " enable folding
 set foldlevelstart=10    " open most folds by default
 set foldnestmax=10       " 10 nested fold max
@@ -93,7 +93,7 @@ augroup lang_c
     " Memory leaks (w/o, w/ parameters)
     autocmd BufEnter *.c map <ESC><F5> :w<CR>:!gcc -Wall -g % -o %< && valgrind ./%<<CR>
     autocmd BufEnter *.c map <ESC><F6> :w<CR>:!gcc -Wall -g % -o %< && valgrind ./%<<SPACE>
-    
+
     " C no spelling
     " autocmd BufRead *.c setlocal nospell
 
